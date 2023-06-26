@@ -91,7 +91,7 @@ class Transfer():
     self.n_epochs = self.kwargs.get('n_epochs', 8)
     self.n_steps = self.kwargs.get('n_steps', 100)
     self.store_iter = self.kwargs.get('store_iter', False)
-    self.show_image = self.kwargs.get('show_image', True)
+    self.show_image = self.kwargs.get('show_image', False)
 
     self.opt = tf.optimizers.Adam(learning_rate=0.02, beta_1=0.99, epsilon=1e-1)
 
@@ -131,7 +131,11 @@ class Transfer():
     steps_per_epoch = self.n_steps
 
     step = 0
-    for n in tqdm(range(epochs)):
+    for n in range(epochs):
+      if n == 0:
+        print('Extracting style')
+      if n == int(epochs/2):
+        print('Transfering style')
       for m in range(steps_per_epoch):
         step += 1
         self.train_step(self.image)
@@ -142,7 +146,7 @@ class Transfer():
       display.clear_output(wait=True)
       if self.show_image:
         display.display(tensor_to_image(self.image))
-      print("Train step: {}".format(step))
+      print("\nIterations: {}".format(step))
 
   def reset_image(self):
     '''resets the stored image to content_image'''
